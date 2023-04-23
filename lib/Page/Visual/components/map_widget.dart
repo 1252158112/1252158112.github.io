@@ -562,14 +562,14 @@ class _MapWidgetState extends State<MapWidget> {
                   subdomains: const ['0', '1', '2', '3'],
                   // retinaMode: MediaQuery.of(context).devicePixelRatio > 1.0,
                   urlTemplate:
-                      "http://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=$key",
+                      "https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=$key",
                 ),
                 TileLayer(
                   subdomains: const ['0', '1', '2', '3'],
                   // retinaMode: MediaQuery.of(context).devicePixelRatio > 1.0,
                   backgroundColor: const Color.fromARGB(0, 0, 0, 0),
                   urlTemplate:
-                      "http://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=$key",
+                      "https://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=$key",
                 ),
                 CircleLayer(
                   circles: [
