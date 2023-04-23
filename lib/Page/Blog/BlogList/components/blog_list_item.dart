@@ -118,7 +118,7 @@ class BlogListItem extends StatelessWidget {
               defaultPadding / 2, defaultPadding / 2, defaultPadding / 2, 0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(defaultBorderRadius),
-            color: Colors.white,
+            color: Get.isDarkMode ? Colors.black : Colors.white,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,10 +212,13 @@ class BlogListItem extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: defaultPadding),
                   clipBehavior: Clip.hardEdge,
                   constraints: const BoxConstraints(maxHeight: 100),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(defaultBorderRadius)),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(3)),
                   child: QuillConfig().onlyShow(context, blog.content),
                 ),
+              ),
+              const SizedBox(
+                height: defaultPadding / 2,
               ),
               Container(
                 clipBehavior: Clip.hardEdge,
