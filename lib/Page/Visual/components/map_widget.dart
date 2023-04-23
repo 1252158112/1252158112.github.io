@@ -204,7 +204,7 @@ class _MapWidgetState extends State<MapWidget> {
         options: MarkerClusterLayerOptions(
           size: const Size(defaultMapCardWidth, defaultMapCardHeight),
           maxClusterRadius: 60,
-          spiderfyCircleRadius: 80,
+          spiderfyCircleRadius: defaultMapCardWidth.toInt() + 30,
           spiderfySpiralDistanceMultiplier: 4,
           animationsOptions:
               const AnimationsOptions(centerMarkerCurves: Curves.easeOutCubic),
@@ -329,6 +329,8 @@ class _MapWidgetState extends State<MapWidget> {
     if (!_serviceEnabled) {
       await _addLocationListener();
     }
+    Geolocator.getCurrentPosition().then((value) =>
+        mapController.move(LatLng(value.latitude, value.longitude), 16));
     mapController.move(pos, 16);
 
     if (GetPlatform.isDesktop) {

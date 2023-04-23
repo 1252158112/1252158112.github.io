@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:vcommunity_flutter/Page/Explore/Main/explore_main_screen.dart';
+import 'package:vcommunity_flutter/Page/Tool/tool_screen.dart';
 import 'package:vcommunity_flutter/Page/User/Info/info_screen.dart';
 import 'package:vcommunity_flutter/Page/User/Welcome/welcome_screen.dart';
 import 'package:vcommunity_flutter/Page/Visual/visual_screen.dart';
@@ -26,6 +27,11 @@ class _HomePageState extends State<HomePage> {
       'widget': ExploreMainScreen(),
       'icon': const Icon(Icons.all_inclusive),
       'label': "探索"
+    },
+    {
+      'widget': ToolScreenPage(),
+      'icon': const Icon(Icons.toll_rounded),
+      'label': "发现"
     },
     {
       'widget': InfoScreen(),

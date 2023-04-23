@@ -99,7 +99,9 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
             Obx(
               () => ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(elevation: 0),
+                style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: Theme.of(context).colorScheme.background),
                 onPressed: () {
                   Get.toNamed("/user/${_userStateUtil.user().id}");
                 },

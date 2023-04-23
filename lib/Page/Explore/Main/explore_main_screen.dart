@@ -38,7 +38,7 @@ class ExploreMainScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.background,
             leading: Container(
               padding: const EdgeInsets.only(left: defaultPadding),
               child: Obx(

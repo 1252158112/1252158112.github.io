@@ -55,7 +55,7 @@ class _InfoScreenState extends State<InfoScreen> {
                             Icons.volume_down_rounded,
                             color: Theme.of(context).colorScheme.primary,
                           ),
-                          const Text("欢迎使用校园新鲜事！！！"),
+                          const Text("欢迎使用足记！！！"),
                         ],
                       ),
                     )),
