@@ -92,6 +92,7 @@ class MyApp extends StatelessWidget {
     // LibraryTool
     Get.put(LibraryHttpUtil());
     Get.put(LibraryStateUtil());
+    Get.put(ScheduleUtil());
     final FlutterShortcuts flutterShortcuts = Get.find();
     final LibraryStateUtil libraryStateUtil = Get.find();
     flutterShortcuts.initialize(debug: true);

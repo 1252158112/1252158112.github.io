@@ -12,7 +12,7 @@ class ScheduleToolHomePage extends StatefulWidget {
 }
 
 class _ScheduleToolHomePageState extends State<ScheduleToolHomePage> {
-  final ScheduleUtil _scheduleUtil = ScheduleUtil();
+  final ScheduleUtil _scheduleUtil = Get.find();
   final TextEditingController textEditingController = TextEditingController();
   List info = [
     {
