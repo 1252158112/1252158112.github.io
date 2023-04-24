@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +27,7 @@ class HttpUtil extends GetConnect {
     httpClient.timeout = const Duration(seconds: 90);
     httpClient.baseUrl = api;
     Map? form = await userStateUtil.getLocalForm();
+    FlutterNativeSplash.remove();
     int tryTime = 2;
     if (form != {}) {
       while (tryTime > 0) {

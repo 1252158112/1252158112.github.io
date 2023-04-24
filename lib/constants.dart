@@ -18,6 +18,10 @@ const blogPageSize = 5;
 const firstCommentsPageSize = 5;
 const secondCommentsPageSize = 5;
 const defaultAvatar = '${api}file/default_avatar.png';
+
+const scheduleAndroidWidgetName = 'ScheduleWidgetProvider';
+const scheduleIOSWidgetName = 'ScheduleWidget';
+
 // 天地图api
 const webKey = "14d94d135597030e77c6618d41039da9"; //web端key
 const appKey = "df257524855357798ac071be4e1a404f"; //服务器端key

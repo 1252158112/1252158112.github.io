@@ -7,6 +7,7 @@ import 'package:vcommunity_flutter/Page/Explore/Building/building_detail_screen.
 import 'package:vcommunity_flutter/Page/Explore/Topic/TopicAdd/topic_add_screen.dart';
 import 'package:vcommunity_flutter/Page/Explore/Topic/topic_detail_screen.dart';
 import 'package:vcommunity_flutter/Page/Search/search_screen.dart';
+import 'package:vcommunity_flutter/Page/Tool/ScheduleTool/pages/scheduleToolHomePage.dart';
 import 'package:vcommunity_flutter/Page/Tool/tool_screen.dart';
 import 'package:vcommunity_flutter/Page/User/Info/components/user_information_screen.dart';
 import 'package:vcommunity_flutter/Page/User/Info/info_edit.dart';
@@ -110,5 +111,9 @@ List<GetPage> routes = [
   GetPage(
     name: '/tool/library_tool/updateInfo',
     page: () => LibraryUpdateInfoPage(),
+  ),
+  GetPage(
+    name: '/tool/schedule_tool',
+    page: () => ScheduleToolHomePage(),
   ),
 ];

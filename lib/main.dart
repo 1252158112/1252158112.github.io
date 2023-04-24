@@ -1,21 +1,77 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_shortcuts/flutter_shortcuts.dart';
 import 'package:get/get.dart';
+import 'package:home_widget/home_widget.dart';
+import 'package:home_widget/home_widget_callback_dispatcher.dart';
 import 'package:vcommunity_flutter/Page/Tool/LibraryTool/util/http_util.dart';
 import 'package:vcommunity_flutter/Page/Tool/LibraryTool/util/state_util.dart';
+import 'package:vcommunity_flutter/Page/Tool/ScheduleTool/util/scheduleUtil.dart';
 import 'package:vcommunity_flutter/constants.dart';
 import 'package:vcommunity_flutter/util/http_util.dart';
 import 'package:vcommunity_flutter/util/user_state_util.dart';
+import 'package:workmanager/workmanager.dart';
 import 'Page/home_page.dart';
+import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 import 'routes.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: kDebugMode);
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const MyApp());
+}
+
+@pragma("vm:entry-point")
+void backgroundCallback(Uri? data) async {
+  final ScheduleUtil scheduleUtil = ScheduleUtil();
+  await scheduleUtil.init();
+  if (scheduleUtil.userToken == '') {
+    HomeWidget.saveWidgetData<String>('location_0', '未输入用户token，请进入app');
+    await HomeWidget.updateWidget(
+        name: scheduleAndroidWidgetName, iOSName: scheduleIOSWidgetName);
+    return;
+  }
+  DateTime now = DateTime.now();
+  int hour = int.parse(DateFormat('HH').format(now));
+  List courses = [];
+  String updateTime = '更新:${DateFormat('HH:mm').format(now)}';
+  String scheduleDate = '';
+  if (hour >= 21) {
+    DateTime tomorrow = now.add(const Duration(days: 1));
+    String formattedDate = DateFormat('yyyy-MM-dd').format(tomorrow);
+    scheduleDate = '明日:$formattedDate课表';
+    //TODO
+    courses = await scheduleUtil.getSchedule('&date=$formattedDate');
+    // courses = await scheduleUtil.getSchedule('&date=2020-10-20');
+  } else {
+    //TODO
+    // courses = await scheduleUtil.getSchedule('&date=2020-10-20');
+    courses = await scheduleUtil.getSchedule('');
+    String formattedDate = DateFormat('MM月dd日').format(now);
+    scheduleDate = '今日:$formattedDate课程';
+  }
+  if (data == null) {
+    return;
+  }
+  await HomeWidget.saveWidgetData<String>('scheduleDate', scheduleDate);
+  await HomeWidget.saveWidgetData<String>('updateTime', updateTime);
+  for (var i = 0; i < courses.length; i++) {
+    var item = courses[i];
+    HomeWidget.saveWidgetData<String>('order_$i', '节次:${item['order']}');
+    HomeWidget.saveWidgetData<String>('className_$i', item['className']);
+    HomeWidget.saveWidgetData<String>('time_$i', item['time']);
+    HomeWidget.saveWidgetData<String>('location_$i', '教室:${item['location']}');
+    HomeWidget.saveWidgetData<String>('teacher_$i', item['teacher']);
+  }
+  await HomeWidget.updateWidget(
+      name: scheduleAndroidWidgetName, iOSName: scheduleIOSWidgetName);
 }
 
 class MyApp extends StatelessWidget {
@@ -50,6 +106,10 @@ class MyApp extends StatelessWidget {
       }
     });
 
+    HomeWidget.registerBackgroundCallback(backgroundCallback);
+    HomeWidget.initiallyLaunchedFromHomeWidget().then((Uri? data) {
+      print('click$data');
+    });
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) {
         return GetMaterialApp(

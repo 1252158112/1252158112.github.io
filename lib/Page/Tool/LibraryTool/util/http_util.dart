@@ -148,6 +148,11 @@ class LibraryHttpUtil extends GetConnect {
     passNetCheck(2);
     passCasCheck(2);
     getLibToken(2);
+    Response getResp = await get(API_TO_NETWORK_CHECK);
+    setCookies(getResp);
+    Response resp = await post(API_PASS_NETWORK_CHECK,
+        'auth_type=local&username=$username&sms_code=&password=$password',
+        headers: {'content-type': 'application/x-www-form-urlencoded'});
     httpClient.followRedirects = false;
     Response seatResp = await get(seatLink);
     String seatSign = seatResp.headers?['location'] ?? '';

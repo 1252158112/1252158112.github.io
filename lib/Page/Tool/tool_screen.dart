@@ -16,12 +16,23 @@ class ToolScreenPage extends StatelessWidget {
         'introduce':
             '基于Flutter开发的额外工具插件，旨在帮助用户跳过校园网的网关验证，实现进入在线图书馆位置预约和扫码签到的功能。',
         'canUsePlatform': [CanUsePlatform.mobile]
+      },
+      {
+        'link': '/tool/schedule_tool',
+        'name': '课表桌面小组件',
+        'author': 'Lejw',
+        'icon': Icons.widgets_rounded,
+        'introduce': '在桌面添加一个显示今日课表的小组件。在使用小组件前需要在这里先粘贴用户token',
+        'canUsePlatform': [CanUsePlatform.mobile]
       }
     ];
     List<Widget> toolList = [];
     for (var i in tools) {
       toolList.add(SelectiveCardWidget(i['link'], i['name'], i['author'],
           i['icon'], i['introduce'], i['canUsePlatform']));
+      toolList.add(const SizedBox(
+        height: defaultPadding,
+      ));
     }
     return Scaffold(
       appBar: AppBar(
