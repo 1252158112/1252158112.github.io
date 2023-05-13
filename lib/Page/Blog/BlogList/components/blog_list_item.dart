@@ -4,14 +4,28 @@ import 'package:vcommunity_flutter/Model/blog.dart';
 import 'package:vcommunity_flutter/components/image_card_with_show.dart';
 import 'package:vcommunity_flutter/components/quill_config.dart';
 import 'package:vcommunity_flutter/constants.dart';
+import 'package:vcommunity_flutter/util/http_util.dart';
 
 import '../../../../util/string_util.dart';
 
-class BlogListItem extends StatelessWidget {
+class BlogListItem extends StatefulWidget {
+  BlogListItem(this.blog, {super.key});
   Blog blog;
+  @override
+  State<BlogListItem> createState() => _BlogListItemState();
+}
+
+class _BlogListItemState extends State<BlogListItem> {
+  final HttpUtil _httpUtil = Get.find();
+  late Blog blog;
   String dateInfo = '';
   String distInfo = '';
-  BlogListItem(this.blog, {super.key});
+  bool isLiking = false;
+  @override
+  void initState() {
+    super.initState();
+    blog = widget.blog;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,16 +221,17 @@ class BlogListItem extends StatelessWidget {
                               Theme.of(context).textTheme.titleSmall!.fontSize),
                     )
                   : const SizedBox(),
-              AbsorbPointer(
-                child: Container(
-                  padding: const EdgeInsets.only(bottom: defaultPadding),
-                  clipBehavior: Clip.hardEdge,
-                  constraints: const BoxConstraints(maxHeight: 100),
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(3)),
-                  child: QuillConfig().onlyShow(context, blog.content),
-                ),
+              // AbsorbPointer(
+              //   child:
+              Container(
+                padding: const EdgeInsets.only(bottom: defaultPadding),
+                clipBehavior: Clip.hardEdge,
+                constraints: const BoxConstraints(maxHeight: 100),
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(3)),
+                child: QuillConfig().onlyShow(context, blog.content, blog.id),
               ),
+              // ),
               const SizedBox(
                 height: defaultPadding / 2,
               ),
@@ -240,9 +255,11 @@ class BlogListItem extends StatelessWidget {
                     child: TextButton.icon(
                       style: TextButton.styleFrom(
                           textStyle: const TextStyle(fontSize: 15)),
-                      onPressed: () {},
+                      onPressed: handlerThumbUp,
                       icon: Icon(
-                        Icons.thumb_up_alt_outlined,
+                        blog.isLike
+                            ? Icons.thumb_up_alt_rounded
+                            : Icons.thumb_up_alt_outlined,
                         color: Theme.of(context).colorScheme.outline,
                         size: 18,
                       ),
@@ -292,5 +309,21 @@ class BlogListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void handlerThumbUp() async {
+    setState(() {
+      isLiking = true;
+    });
+    if (blog.isLike) {
+      await _httpUtil.delete('$apiFollowBlog?id=${blog.id}');
+    } else {
+      await _httpUtil.post('$apiFollowBlog?id=${blog.id}', {});
+    }
+    setState(() {
+      blog.isLike = !blog.isLike;
+      blog.isLike ? blog.liked++ : blog.liked--;
+      isLiking = false;
+    });
   }
 }

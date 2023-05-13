@@ -124,7 +124,7 @@ class QuillConfig {
     return "";
   }
 
-  Widget onlyShow(BuildContext context, String content) {
+  Widget onlyShow(BuildContext context, String content, String blogId) {
     Color onBackground = Theme.of(context).colorScheme.onBackground;
     QuillController quillController = QuillController(
         document: Document.fromJson(jsonDecode(content)),
@@ -141,6 +141,10 @@ class QuillConfig {
           value = value.replaceAll('https://', '');
         }
         Get.toNamed(value);
+      },
+      onTapUp: (a, b) {
+        Get.toNamed('/blog/$blogId');
+        return true;
       },
       focusNode: FocusNode(skipTraversal: true),
       autoFocus: false,

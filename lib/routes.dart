@@ -18,6 +18,7 @@ import 'Page/Tool/LibraryTool/pages/ScanPage.dart';
 import 'Page/Tool/LibraryTool/pages/SignSeatPage.dart';
 import 'Page/Tool/LibraryTool/pages/UpdateInfoPage.dart';
 import 'Page/Tool/LibraryTool/pages/WebviewPage.dart';
+import 'Page/User/Blogs/user_blogs.dart';
 import 'Page/User/Login/login_screen.dart';
 import 'Page/User/Signup/signup_screen.dart';
 import 'Page/home_page.dart';
@@ -46,6 +47,11 @@ List<GetPage> routes = [
   GetPage(
     name: '/search',
     page: () => SearchScreen(),
+  ),
+  GetPage(
+    name: '/user/blogs',
+    page: () => UserHistoryBlogs(),
+    middlewares: [UserMiddleWare()],
   ),
   GetPage(
     name: '/user/:userId',

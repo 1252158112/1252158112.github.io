@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:vcommunity_flutter/Model/api_response.dart';
-import 'package:vcommunity_flutter/Model/blog.dart';
-import 'package:vcommunity_flutter/util/http_util.dart';
-import 'package:vcommunity_flutter/util/user_state_util.dart';
 
+import '../../../Model/api_response.dart';
+import '../../../Model/blog.dart';
 import '../../../constants.dart';
+import '../../../util/http_util.dart';
+import '../../../util/user_state_util.dart';
 import '../../Blog/BlogList/components/blog_list_item.dart';
 
-class ListBlogScreen extends StatefulWidget {
-  String url;
-  bool notLastId = false;
-  ListBlogScreen(this.url, {super.key, this.notLastId = false});
+class UserHistoryBlogs extends StatefulWidget {
+  const UserHistoryBlogs({super.key});
 
   @override
-  State<ListBlogScreen> createState() => _ListBlogScreenState();
+  State<UserHistoryBlogs> createState() => _UserHistoryBlogsState();
 }
 
-class _ListBlogScreenState extends State<ListBlogScreen>
-    with AutomaticKeepAliveClientMixin {
+class _UserHistoryBlogsState extends State<UserHistoryBlogs> {
   final HttpUtil _httpUtil = Get.find();
   final UserStateUtil _userStateUtil = Get.find();
-  int timeStamp = DateTime.now().millisecondsSinceEpoch;
   int pages = 1;
   bool notMore = false;
   List<Blog> _blogs = [];
   List<Widget> listWidget = [];
+  bool _firstLoading = true;
   bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
@@ -37,6 +33,13 @@ class _ListBlogScreenState extends State<ListBlogScreen>
   @override
   Widget build(BuildContext context) {
     Widget tipsWidget = const SizedBox();
+    if (_firstLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     if (_isLoading) {
       tipsWidget = const Center(
         child: Padding(
@@ -55,32 +58,34 @@ class _ListBlogScreenState extends State<ListBlogScreen>
         ),
       ));
     }
-    return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-          getData();
-        }
-        return true;
-      },
-      child: RefreshIndicator(
-        onRefresh: () async {
-          refreshData();
+    return Scaffold(
+      appBar: AppBar(title: const Text('历史动态')),
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+            getData();
+          }
+          return true;
         },
-        child: ListView(
-          children: [
-            const SizedBox(
-              height: defaultPadding / 2,
-            ),
-            ...listWidget,
-            tipsWidget
-          ],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            refreshData();
+          },
+          child: ListView(
+            children: [
+              const SizedBox(
+                height: defaultPadding / 2,
+              ),
+              ...listWidget,
+              tipsWidget
+            ],
+          ),
         ),
       ),
     );
   }
 
   refreshData() async {
-    timeStamp = DateTime.now().millisecondsSinceEpoch;
     pages = 1;
     notMore = false;
     _isLoading = false;
@@ -88,10 +93,11 @@ class _ListBlogScreenState extends State<ListBlogScreen>
       _blogs.clear();
       listWidget.clear();
     });
-    getData();
+    await getData();
+    _firstLoading = false;
   }
 
-  void getData() async {
+  getData() async {
     if (_isLoading) {
       return;
     }
@@ -101,13 +107,9 @@ class _ListBlogScreenState extends State<ListBlogScreen>
     setState(() {
       _isLoading = true;
     });
-    String api = widget.url;
-    if (!widget.notLastId) {
-      api = '$api$timeStamp&page=$pages&size=$blogPageSize';
-    } else {
-      api =
-          '$api&longitude=${_userStateUtil.nowPos.longitude}&latitude=${_userStateUtil.nowPos.latitude}';
-    }
+    String api = apiMyBlog;
+    api = '$api?page=$pages&size=$blogPageSize';
+
     Response response = await _httpUtil.get(api);
     pages++;
     List<Blog> blogs =
@@ -125,7 +127,4 @@ class _ListBlogScreenState extends State<ListBlogScreen>
       _isLoading = false;
     });
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

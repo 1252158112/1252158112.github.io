@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:vcommunity_flutter/constants.dart';
 
 class ImageCardWithShow extends StatelessWidget {
-  ImageCardWithShow(this.borderRadius, this.size, {super.key, this.url});
+  ImageCardWithShow(this.borderRadius, this.size,
+      {super.key, this.url, this.hasHero = true});
   String? url;
+  bool hasHero;
   final double size;
   final BorderRadiusGeometry borderRadius;
   @override
@@ -20,22 +22,40 @@ class ImageCardWithShow extends StatelessWidget {
     if (!url!.contains(api)) {
       url = api + url!;
     }
+    if (hasHero) {
+      InkWell(
+        onTap: () => Get.toNamed("/imageView?path=$url"),
+        child: Hero(
+          tag: url!,
+          child: Container(
+            height: size,
+            width: size,
+            //超出部分，可裁剪
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+            ),
+            child: Image.network(
+              url!,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+    }
     return InkWell(
       onTap: () => Get.toNamed("/imageView?path=$url"),
-      child: Hero(
-        tag: url!,
-        child: Container(
-          height: size,
-          width: size,
-          //超出部分，可裁剪
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            borderRadius: borderRadius,
-          ),
-          child: Image.network(
-            url!,
-            fit: BoxFit.cover,
-          ),
+      child: Container(
+        height: size,
+        width: size,
+        //超出部分，可裁剪
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+        ),
+        child: Image.network(
+          url!,
+          fit: BoxFit.cover,
         ),
       ),
     );

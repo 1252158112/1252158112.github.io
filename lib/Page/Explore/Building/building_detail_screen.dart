@@ -144,7 +144,7 @@ class _BuildingDetailScreenState extends State<BuildingDetailScreen> {
                               .withAlpha(255),
                           _iconThemeColor!.withAlpha(0),
                         ]).createShader(
-                        Rect.fromLTRB(0, 0, bounds.width, bounds.bottom));
+                        Rect.fromLTRB(0, 100, bounds.width, bounds.bottom));
                   }),
                   child: ImageFiltered(
                     imageFilter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),

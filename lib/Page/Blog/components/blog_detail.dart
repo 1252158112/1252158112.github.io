@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +11,8 @@ import '../../../util/string_util.dart';
 
 class BlogDetailWidget extends StatefulWidget {
   Blog blog;
-  BlogDetailWidget(this.blog, {super.key});
+  bool notClickReturn;
+  BlogDetailWidget(this.blog, {super.key, this.notClickReturn = true});
 
   @override
   State<BlogDetailWidget> createState() => _BlogDetailWidgetState();
@@ -18,54 +20,148 @@ class BlogDetailWidget extends StatefulWidget {
 
 class _BlogDetailWidgetState extends State<BlogDetailWidget> {
   final PageController _pageController = PageController();
-  var _picIndex = 0;
-  late Blog blog;
 
+  late ValueNotifier<double> _pageNotifier;
+  late Blog blog;
+  int _pos = 0;
   @override
   void initState() {
     super.initState();
     blog = widget.blog;
+    _pageNotifier = ValueNotifier(0.0);
+    _pageController.addListener(() {
+      _pageNotifier.value = _pageController.page!;
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _pageNotifier.dispose();
+    super.dispose();
+  }
+
+  Widget imagePageView(BuildContext context, List<String> images) {
+    List<String> backgroundImages = images;
+    Size size = MediaQuery.of(context).size;
+    double picHeight = min(size.height * 0.6, 350);
+    return AnimatedBuilder(
+      animation: _pageNotifier,
+      builder: (context, _) {
+        int currentIndex = _pageNotifier.value.floor();
+        int nextPageIndex = currentIndex + 1;
+        if (nextPageIndex >= backgroundImages.length) {
+          nextPageIndex = 0;
+        }
+        double t = _pageNotifier.value - currentIndex;
+
+        return Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              child: ShaderMask(
+                shaderCallback: ((bounds) {
+                  return LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(context)
+                            .colorScheme
+                            .background
+                            .withOpacity(1 - t),
+                        Theme.of(context)
+                            .colorScheme
+                            .background
+                            .withOpacity(1 - t)
+                      ]).createShader(
+                      Rect.fromLTRB(0, 0, bounds.width, bounds.bottom));
+                }),
+                child: ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaY: 10, sigmaX: 10),
+                  child: Image.network(
+                    backgroundImages[currentIndex],
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              child: ShaderMask(
+                shaderCallback: ((bounds) {
+                  return LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(context).colorScheme.background.withOpacity(t),
+                        Theme.of(context).colorScheme.background.withOpacity(t)
+                      ]).createShader(
+                      Rect.fromLTRB(0, 0, bounds.width, bounds.bottom));
+                }),
+                child: ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaY: 10, sigmaX: 10),
+                  child: Image.network(
+                    backgroundImages[nextPageIndex],
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+            ),
+            PageView.builder(
+              controller: _pageController,
+              itemCount: images.length,
+              onPageChanged: (value) => setState(() {
+                _pos = value;
+              }),
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    Get.toNamed("/imageView?path=${images[currentIndex]}");
+                  },
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(images[index]),
+                            fit: BoxFit.contain),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     bool hasTitle = blog.title != '';
-    List<Widget> imageList = [];
     List<Widget> topicList = [];
     List<Widget> indicater = [];
+    int picLen = blog.images.split(',').length;
     Size size = MediaQuery.of(context).size;
     double picHeight = min(size.height * 0.6, 350);
-    int picLen = blog.images.split(',').length;
     bool noPic = false;
+    List<String> images = [];
     for (var i in blog.images.split(',')) {
       if (i == '') {
         noPic = true;
         break;
       }
-      imageList.add(
-        InkWell(
-          onTap: () {
-            Get.toNamed("/imageView?path=$api$i");
-          },
-          child: Hero(
-            tag: api + i,
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(api + i), fit: BoxFit.contain),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
+      images.add(api + i);
     }
     for (int i = 0; i < picLen; i++) {
       indicater.add(InkWell(
         onTap: () {
-          _pageController.jumpToPage(i);
+          _pageController.animateToPage(i,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.bounceInOut);
         },
         child: Container(
           margin: const EdgeInsets.all(2),
@@ -73,7 +169,7 @@ class _BlogDetailWidgetState extends State<BlogDetailWidget> {
           width: 7,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: _picIndex == i
+              color: _pos == i
                   ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).colorScheme.primaryContainer),
         ),
@@ -106,18 +202,10 @@ class _BlogDetailWidgetState extends State<BlogDetailWidget> {
         : [
             SizedBox(
               height: picHeight,
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (value) {
-                  setState(() {
-                    _picIndex = value;
-                  });
-                },
-                children: imageList,
-              ),
+              child: imagePageView(context, images),
             ),
             const SizedBox(
-              height: defaultPadding / 2,
+              height: defaultPadding,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

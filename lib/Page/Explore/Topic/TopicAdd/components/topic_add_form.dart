@@ -137,13 +137,13 @@ class _TopicAddForm extends State<TopicAddForm> {
     for (var element in keys) {
       picUrls.add(pics[element]!);
     }
-    _topic = Topic(
-        id: _topic.id, name: name, introduce: introduce, icon: picUrls.first);
+    var topic = Topic(name: name, introduce: introduce, icon: picUrls.first);
     var addResp;
     if (_isEdit) {
-      addResp = await _httpUtil.put(apiAddTopic, _topic.toJson());
+      topic.id = _topic.id;
+      addResp = await _httpUtil.put(apiAddTopic, topic.toJson());
     } else {
-      addResp = await _httpUtil.post(apiAddTopic, _topic.toJson());
+      addResp = await _httpUtil.post(apiAddTopic, topic.toJson());
     }
     if (addResp.status.hasError) {
       setState(() {

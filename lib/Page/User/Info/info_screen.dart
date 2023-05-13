@@ -24,6 +24,12 @@ class _InfoScreenState extends State<InfoScreen> {
   BuildingList likeBuilding = BuildingList([]);
   TopicList likeTopic = TopicList([]);
   @override
+  void initState() {
+    super.initState();
+    _refresh();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("我的"), actions: [

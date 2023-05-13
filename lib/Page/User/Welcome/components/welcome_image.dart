@@ -13,7 +13,7 @@ class WelcomeImage extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "欢迎使用校园新鲜事",
+          "欢迎使用足记",
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         const SizedBox(height: defaultPadding * 2),

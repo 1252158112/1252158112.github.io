@@ -9,6 +9,7 @@ const double largeBorderRadius = 24;
 const double defaultMapCardElevate = 3;
 const double defaultMapCardHeight = 100;
 const double defaultMapCardWidth = 145;
+const double defaultEmojiHeight = 250;
 // const api = 'http://192.168.137.1:9080/';
 
 const api = 'https://community.lejw.top/';
@@ -56,9 +57,11 @@ const String apiAddBlog = "blog";
 const String apiGetBlogDetail = "blog/detail/";
 const String apiNearbyBlog = "blog/list/location";
 const String apiSearchBlog = "blog/search";
+const String apiMyBlog = "blog/me";
 const String apiGetFirstComments = 'blogComments/list/first';
 const String apiGetSecondComments = 'blogComments/list/second';
 const String apiOperateComments = 'blogComments';
+const String apiFollowBlog = "blogLike";
 
 const String userTokenPath = "user:token";
 const String keywordPath = "keyword";

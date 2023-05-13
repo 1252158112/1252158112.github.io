@@ -123,7 +123,8 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
   Widget _buildTriple() {
     return Row(
       children: [
-        Obx(() => _buildTripleItem("动态", _userStateUtil.user().blogs, () {})),
+        Obx(() => _buildTripleItem("动态", _userStateUtil.user().blogs,
+            () => Get.toNamed("/user/blogs"))),
         SizedBox(
           height: 30,
           child: VerticalDivider(
@@ -140,13 +141,13 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
     );
   }
 
-  Widget _buildTripleItem(String type, int number, Function onTap) {
+  Widget _buildTripleItem(String type, int number, Function()? onTap) {
     return Expanded(
         flex: 1,
         child: InkWell(
           borderRadius:
               const BorderRadius.all(Radius.circular(defaultBorderRadius)),
-          onTap: () => onTap,
+          onTap: onTap,
           child: Column(children: [
             Text(
               number.toString(),
