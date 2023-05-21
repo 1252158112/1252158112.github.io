@@ -9,7 +9,6 @@ import 'package:vcommunity_flutter/Page/Explore/Topic/topic_detail_screen.dart';
 import 'package:vcommunity_flutter/Page/Search/search_screen.dart';
 import 'package:vcommunity_flutter/Page/Tool/ScheduleTool/pages/scheduleToolHomePage.dart';
 import 'package:vcommunity_flutter/Page/Tool/tool_screen.dart';
-import 'package:vcommunity_flutter/Page/User/Info/components/user_information_screen.dart';
 import 'package:vcommunity_flutter/Page/User/Info/info_edit.dart';
 import 'package:vcommunity_flutter/Page/User/Welcome/welcome_screen.dart';
 import 'package:vcommunity_flutter/components/image_display.dart';
@@ -26,31 +25,31 @@ import 'Page/home_page.dart';
 List<GetPage> routes = [
   GetPage(
     name: '/',
-    page: () => HomePage(),
+    page: () => const HomePage(),
   ),
   GetPage(
     name: '/imageView',
-    page: () => ImageDisplayScreen(),
+    page: () => const ImageDisplayScreen(),
   ),
   GetPage(
     name: '/welcome',
-    page: () => WelcomeScreen(),
+    page: () => const WelcomeScreen(),
   ),
   GetPage(
     name: '/login',
-    page: () => LoginScreen(),
+    page: () => const LoginScreen(),
   ),
   GetPage(
     name: '/signup',
-    page: () => SignUpScreen(),
+    page: () => const SignUpScreen(),
   ),
   GetPage(
     name: '/search',
-    page: () => SearchScreen(),
+    page: () => const SearchScreen(),
   ),
   GetPage(
     name: '/user/blogs',
-    page: () => UserHistoryBlogs(),
+    page: () => const UserHistoryBlogs(),
     middlewares: [UserMiddleWare()],
   ),
   GetPage(
@@ -60,43 +59,43 @@ List<GetPage> routes = [
   ),
   GetPage(
     name: '/topic/add',
-    page: () => TopicAddScreen(),
+    page: () => const TopicAddScreen(),
     middlewares: [UserMiddleWare()],
   ),
   GetPage(
     name: '/topic/:topicId',
-    page: () => TopicDetailScreen(),
+    page: () => const TopicDetailScreen(),
   ),
   GetPage(
     name: '/topic/edit/:topicId',
-    page: () => TopicAddScreen(),
+    page: () => const TopicAddScreen(),
     middlewares: [UserMiddleWare()],
   ),
   GetPage(
     name: '/building/add',
-    page: () => BuildingAddScreen(),
+    page: () => const BuildingAddScreen(),
     middlewares: [UserMiddleWare()],
   ),
   GetPage(
     name: '/building/edit/:buildingId',
-    page: () => BuildingAddScreen(),
+    page: () => const BuildingAddScreen(),
     middlewares: [UserMiddleWare()],
   ),
   GetPage(
     name: '/building/:buildingId',
-    page: () => BuildingDetailScreen(),
+    page: () => const BuildingDetailScreen(),
   ),
   GetPage(
       name: '/blog/add',
-      page: () => BlogEditScreen(),
+      page: () => const BlogEditScreen(),
       middlewares: [UserMiddleWare()]),
   GetPage(
     name: '/blog/:blogId',
-    page: () => BlogDetailScreen(),
+    page: () => const BlogDetailScreen(),
   ),
   GetPage(
     name: '/tool',
-    page: () => ToolScreenPage(),
+    page: () => const ToolScreenPage(),
   ),
   GetPage(
     name: '/tool/library_tool',
@@ -112,7 +111,7 @@ List<GetPage> routes = [
   ),
   GetPage(
     name: '/tool/library_tool/signSeat',
-    page: () => LibrarySignSeatPage(),
+    page: () => const LibrarySignSeatPage(),
   ),
   GetPage(
     name: '/tool/library_tool/updateInfo',
@@ -120,6 +119,6 @@ List<GetPage> routes = [
   ),
   GetPage(
     name: '/tool/schedule_tool',
-    page: () => ScheduleToolHomePage(),
+    page: () => const ScheduleToolHomePage(),
   ),
 ];

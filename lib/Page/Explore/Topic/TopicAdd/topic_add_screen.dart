@@ -10,12 +10,12 @@ class TopicAddScreen extends StatelessWidget {
     String topicId = Get.parameters['topicId'] ?? "";
     if (topicId == "") {
       return Scaffold(
-        appBar: AppBar(title: const Text("添加建筑")),
+        appBar: AppBar(title: const Text("添加话题")),
         body: TopicAddForm(),
       );
     } else {
       return Scaffold(
-        appBar: AppBar(title: const Text("添加话题")),
+        appBar: AppBar(title: const Text("修改话题")),
         body: TopicAddForm(topicId: topicId),
       );
     }

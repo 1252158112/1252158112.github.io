@@ -22,9 +22,13 @@ import 'dart:ui' as ui;
 import 'routes.dart';
 
 void main() {
+  if (GetPlatform.isAndroid) {
+    Workmanager().initialize(callbackDispatcher, isInDebugMode: kDebugMode);
+  }
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  Workmanager().initialize(callbackDispatcher, isInDebugMode: kDebugMode);
+
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   runApp(const MyApp());
 }
 
@@ -93,24 +97,27 @@ class MyApp extends StatelessWidget {
     Get.put(LibraryHttpUtil());
     Get.put(LibraryStateUtil());
     Get.put(ScheduleUtil());
-    final FlutterShortcuts flutterShortcuts = Get.find();
     final LibraryStateUtil libraryStateUtil = Get.find();
-    flutterShortcuts.initialize(debug: true);
+    if (GetPlatform.isAndroid) {
+      final FlutterShortcuts flutterShortcuts = Get.find();
+      flutterShortcuts.initialize(debug: true);
 
-    flutterShortcuts.listenAction((String incomingAction) {
-      if (incomingAction == 'toScanPage') {
-        Get.toNamed('/tool/library_tool/scan');
-      } else if (incomingAction.contains('toSignSeat')) {
-        String link = incomingAction.split('@@@')[1];
-        libraryStateUtil.signLink = link;
-        Get.toNamed('/tool/library_tool/signSeat');
-      }
-    });
+      flutterShortcuts.listenAction((String incomingAction) {
+        if (incomingAction == 'toScanPage') {
+          Get.toNamed('/tool/library_tool/scan');
+        } else if (incomingAction.contains('toSignSeat')) {
+          String link = incomingAction.split('@@@')[1];
+          libraryStateUtil.signLink = link;
+          Get.toNamed('/tool/library_tool/signSeat');
+        }
+      });
 
-    HomeWidget.registerBackgroundCallback(backgroundCallback);
-    HomeWidget.initiallyLaunchedFromHomeWidget().then((Uri? data) {
-      print('click$data');
-    });
+      HomeWidget.registerBackgroundCallback(backgroundCallback);
+      HomeWidget.initiallyLaunchedFromHomeWidget().then((Uri? data) {
+        print('click$data');
+      });
+    }
+
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) {
         return GetMaterialApp(
@@ -125,7 +132,7 @@ class MyApp extends StatelessWidget {
           darkTheme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.dark,
-            fontFamily: 'OPlusSans3',
+            // fontFamily: 'OPlusSans3',
             colorSchemeSeed: darkDynamic?.primary ?? seed,
             cardTheme: const CardTheme(
               elevation: 0,
@@ -154,7 +161,7 @@ class MyApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           theme: ThemeData(
             useMaterial3: true,
-            fontFamily: 'OPlusSans3',
+            fontFamily: GetPlatform.isWeb ? null : 'OPlusSans3',
             colorSchemeSeed: lightDynamic?.primary ?? seed,
             scaffoldBackgroundColor: ColorScheme.fromSeed(
               seedColor: lightDynamic?.primary ?? seed,

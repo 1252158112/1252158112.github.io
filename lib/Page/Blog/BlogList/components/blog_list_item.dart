@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vcommunity_flutter/Model/blog.dart';
@@ -34,7 +36,7 @@ class _BlogListItemState extends State<BlogListItem> {
     List<Widget> imageList = [];
     List<Widget> topicList = [];
     Size size = MediaQuery.of(context).size;
-    double picSize = (size.width - defaultPadding * 3);
+    double picSize = min((size.width - defaultPadding * 3), 450);
     int picLen = blog.images.split(',').length;
     bool noPic = false;
     dateInfo = calculateTimeDifference(blog.createTime);
@@ -245,6 +247,9 @@ class _BlogListItemState extends State<BlogListItem> {
                   runSpacing: defaultPadding / 6,
                   children: imageList,
                 ),
+              ),
+              SizedBox(
+                height: topicList.isNotEmpty ? defaultPadding / 2 : 0,
               ),
               Row(
                 children: topicList,

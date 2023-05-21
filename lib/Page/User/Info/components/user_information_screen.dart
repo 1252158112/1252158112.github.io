@@ -130,7 +130,8 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
           child: VerticalDivider(
               color: Theme.of(context).colorScheme.primaryContainer),
         ),
-        _buildTripleItem("关注", _userStateUtil.user().follows, () {}),
+        _buildTripleItem(
+            "关注", _userStateUtil.user().follows, () => Get.toNamed("/test")),
         SizedBox(
           height: 30,
           child: VerticalDivider(

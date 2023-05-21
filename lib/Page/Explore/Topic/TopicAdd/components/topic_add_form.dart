@@ -55,7 +55,7 @@ class _TopicAddForm extends State<TopicAddForm> {
   Future<void> _sendTopic(BuildContext context) async {
     final images = _controller.images;
     var name = _nameController.text;
-    var introduce = _nameController.text;
+    var introduce = _introduceController.text;
     var imageSize = images.length;
     var warnMess = "";
     if (name.isEmpty) {
@@ -183,13 +183,13 @@ class _TopicAddForm extends State<TopicAddForm> {
             maxLength: 20,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurfaceVariant),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "话题名称",
               hintText: "输入你想添加的话题名称",
               filled: true,
-              fillColor: Colors.white,
-              prefixIcon: Icon(Icons.topic),
-              border: OutlineInputBorder(
+              fillColor: Theme.of(context).colorScheme.background,
+              prefixIcon: const Icon(Icons.topic),
+              border: const OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius:
                     BorderRadius.all(Radius.circular(defaultBorderRadius)),
@@ -240,13 +240,13 @@ class _TopicAddForm extends State<TopicAddForm> {
             maxLength: 200,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurfaceVariant),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "话题介绍(选填)",
               hintText: "输入你想添加的话题的简介",
               filled: true,
-              fillColor: Colors.white,
-              prefixIcon: Icon(Icons.bookmark),
-              border: OutlineInputBorder(
+              fillColor: Theme.of(context).colorScheme.background,
+              prefixIcon: const Icon(Icons.bookmark),
+              border: const OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius:
                     BorderRadius.all(Radius.circular(defaultBorderRadius)),

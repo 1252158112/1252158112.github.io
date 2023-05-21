@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:multi_image_picker_view/multi_image_picker_view.dart';
 import 'package:vcommunity_flutter/Model/api_response.dart';
 import 'package:vcommunity_flutter/Model/comment.dart';
+import 'package:vcommunity_flutter/components/responsive.dart';
 import 'package:vcommunity_flutter/constants.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:vcommunity_flutter/util/user_state_util.dart';
@@ -260,153 +261,183 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
           ),
         ];
       }
-
-      return WillPopScope(
-        onWillPop: () {
-          setState(() {
-            _isClickReturn = true;
-          });
-          return Future(() => true);
-        },
-        child: Hero(
-          tag: '/blog/${blog.id}',
-          child: Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+      PreferredSizeWidget appBar = AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+                onPressed: () => Get.back(),
+                icon: const Icon(Icons.arrow_back_rounded)),
+            CircleAvatar(
+              radius: 20,
+              backgroundImage: NetworkImage(blog.user?.icon ?? defaultAvatar),
+            ),
+            const SizedBox(
+              width: defaultPadding / 2,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IconButton(
-                      onPressed: () => Get.back(),
-                      icon: const Icon(Icons.arrow_back_rounded)),
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundImage:
-                        NetworkImage(blog.user?.icon ?? defaultAvatar),
-                  ),
-                  const SizedBox(
-                    width: defaultPadding / 2,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              blog.user?.nickName ?? '已删除用户',
-                              style: TextStyle(
-                                height: 2,
-                                fontSize: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge!
-                                    .fontSize,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            Icon(
-                              isMale
-                                  ? Icons.female_rounded
-                                  : Icons.male_rounded,
-                              color: isMale ? Colors.pinkAccent : Colors.blue,
-                              size: 14,
-                            ),
-                          ],
+                  Row(
+                    children: [
+                      Text(
+                        blog.user?.nickName ?? '已删除用户',
+                        style: TextStyle(
+                          height: 2,
+                          fontSize:
+                              Theme.of(context).textTheme.labelLarge!.fontSize,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        Row(
-                          children: [
-                            ...posList,
-                            Text(
-                              dateInfo,
-                              style: TextStyle(
-                                fontSize: Theme.of(context)
-                                    .textTheme
-                                    .labelSmall!
-                                    .fontSize,
-                                color: Theme.of(context).colorScheme.outline,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: defaultPadding / 2,
-                            ),
-                            Icon(
-                              Icons.credit_card_rounded,
-                              color: Theme.of(context).colorScheme.outline,
-                              size: Theme.of(context)
-                                  .textTheme
-                                  .labelSmall!
-                                  .fontSize,
-                            ),
-                            Text(
-                              blog.user?.introduce ?? '已删除用户',
-                              style: TextStyle(
-                                fontSize: Theme.of(context)
-                                    .textTheme
-                                    .labelSmall!
-                                    .fontSize,
-                                color: Theme.of(context).colorScheme.outline,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
+                      ),
+                      Icon(
+                        isMale ? Icons.female_rounded : Icons.male_rounded,
+                        color: isMale ? Colors.pinkAccent : Colors.blue,
+                        size: 14,
+                      ),
+                    ],
                   ),
-                  IconButton(
-                      onPressed: _popUpModelSheet,
-                      icon: const Icon(Icons.more_vert_rounded)),
+                  Row(
+                    children: [
+                      ...posList,
+                      Text(
+                        dateInfo,
+                        style: TextStyle(
+                          fontSize:
+                              Theme.of(context).textTheme.labelSmall!.fontSize,
+                          color: Theme.of(context).colorScheme.outline,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: defaultPadding / 2,
+                      ),
+                      Icon(
+                        Icons.credit_card_rounded,
+                        color: Theme.of(context).colorScheme.outline,
+                        size: Theme.of(context).textTheme.labelSmall!.fontSize,
+                      ),
+                      Text(
+                        blog.user?.introduce ?? '已删除用户',
+                        style: TextStyle(
+                          fontSize:
+                              Theme.of(context).textTheme.labelSmall!.fontSize,
+                          color: Theme.of(context).colorScheme.outline,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
-            body: Column(
-              children: [
-                Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      _init(type: 1);
-                    },
-                    child: CustomScrollView(
-                      controller: _scrollController,
-                      slivers: [
-                        SliverToBoxAdapter(
-                          child: BlogDetailWidget(_blog!),
-                        ),
-                        SliverPersistentHeader(
-                          pinned: true,
-                          delegate: SliverHeaderDelegate.fixedHeight(
-                            height: 50,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: defaultPadding / 2),
-                                  child: Text(
-                                    '共${blog.comments}回复',
-                                    style: TextStyle(
-                                        fontSize: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .fontSize),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        ...commentArea,
-                        SliverToBoxAdapter(child: tipsWidget)
-                      ],
-                    ),
+            IconButton(
+                onPressed: _popUpModelSheet,
+                icon: const Icon(Icons.more_vert_rounded)),
+          ],
+        ),
+      );
+      Widget header = SliverPersistentHeader(
+        pinned: true,
+        delegate: SliverHeaderDelegate.fixedHeight(
+          height: 50,
+          child: Column(
+            children: [
+              Container(
+                color: Theme.of(context).colorScheme.onInverseSurface,
+                padding:
+                    const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    '共${blog.comments}回复',
+                    style: TextStyle(
+                        fontSize:
+                            Theme.of(context).textTheme.bodyMedium!.fontSize),
                   ),
                 ),
-                handWritingBar
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
+      Widget mobile = Hero(
+        tag: '/blog/${blog.id}',
+        child: Scaffold(
+          appBar: appBar,
+          body: Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    _init(type: 1);
+                  },
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: BlogDetailWidget(_blog!),
+                      ),
+                      header,
+                      ...commentArea,
+                      SliverToBoxAdapter(child: tipsWidget)
+                    ],
+                  ),
+                ),
+              ),
+              handWritingBar
+            ],
+          ),
+        ),
+      );
+      Widget desktop = Hero(
+        tag: '/blog/${blog.id}',
+        child: Scaffold(
+            body: SizedBox(
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(defaultBorderRadius)),
+                  child: ListView(children: [BlogDetailWidget(_blog!)]),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          _init(type: 1);
+                        },
+                        child: CustomScrollView(
+                          controller: _scrollController,
+                          slivers: [
+                            SliverToBoxAdapter(
+                                child: Column(
+                              children: [
+                                appBar,
+                              ],
+                            )),
+                            header,
+                            ...commentArea,
+                            SliverToBoxAdapter(child: tipsWidget)
+                          ],
+                        ),
+                      ),
+                    ),
+                    handWritingBar
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )),
+      );
+      return Responsive(mobile: mobile, desktop: desktop);
     }
     return Hero(
         tag: '/blog/$_blogId',
@@ -524,26 +555,24 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
           mainAxisSpacing: defaultPadding / 2),
       addMoreBuilder: (context, pickerCallback) {
         return SizedBox(
-          child: Expanded(
-            child: Row(
-              children: [
-                SizedBox(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(defaultBorderRadius))),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [Icon(Icons.add), Text('添加')]),
-                    onPressed: () {
-                      pickerCallback();
-                    },
-                  ),
+          child: Row(
+            children: [
+              SizedBox(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(defaultBorderRadius))),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [Icon(Icons.add), Text('添加')]),
+                  onPressed: () {
+                    pickerCallback();
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

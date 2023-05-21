@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Color seed = Colors.blueAccent;
+const Color seed = Colors.blueAccent;
 const double defaultPadding = 16.0;
 const double defaultButtonPadding = 10.0;
 const double defaultBorderRadius = 11;
@@ -11,7 +11,7 @@ const double defaultMapCardHeight = 100;
 const double defaultMapCardWidth = 145;
 const double defaultEmojiHeight = 250;
 // const api = 'http://192.168.137.1:9080/';
-
+//
 const api = 'https://community.lejw.top/';
 
 const pageSize = 5;

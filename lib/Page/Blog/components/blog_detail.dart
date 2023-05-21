@@ -215,14 +215,14 @@ class _BlogDetailWidgetState extends State<BlogDetailWidget> {
     return Container(
       alignment: Alignment.center,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(
-            height: defaultPadding / 2,
-          ),
+          // const SizedBox(
+          //   height: defaultPadding / 2,
+          // ),
           ...imageWidget,
           Padding(
-            padding: const EdgeInsets.all(defaultPadding),
+            padding: const EdgeInsets.fromLTRB(
+                defaultPadding, 0, defaultPadding, defaultPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

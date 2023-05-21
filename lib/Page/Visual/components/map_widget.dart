@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:vcommunity_flutter/Model/api_response.dart';
 import 'package:vcommunity_flutter/Model/building.dart';
 import 'package:vcommunity_flutter/Page/Visual/components/blog_item_in_map.dart';
+import 'package:vcommunity_flutter/components/card_title.dart';
 import 'package:vcommunity_flutter/components/responsive.dart';
 import 'dart:io';
 import 'package:vcommunity_flutter/constants.dart';
@@ -18,6 +19,8 @@ import 'package:vcommunity_flutter/util/http_util.dart';
 import 'package:vcommunity_flutter/util/user_state_util.dart';
 
 import '../../../Model/blog.dart';
+import '../../../Model/buildingType.dart';
+import '../../../Model/buildingType.dart';
 
 class MapWidget extends StatefulWidget {
   MapWidget({this.useMap = true, super.key});
@@ -43,11 +46,13 @@ class _MapWidgetState extends State<MapWidget> {
   double _range = 600;
   bool isWeb = false;
   CircleMarker? _circleMark;
-  List<Marker> _buildings = [];
+  List<MarkerLayer> _buildingLayers = [];
+  Map<int, List<Marker>> _buildingMap = {};
+  Map<int, bool> _buildingShow = {};
+  List<BuildingType> typeList = [];
   List<Marker> _blogs = [];
   Widget _blogCluster = MarkerLayer();
   List<Marker> _userMarker = [];
-  bool _showFilter = true;
   bool _showBuilding = true;
   bool _showBlogs = true;
   bool _showUser = true;
@@ -84,6 +89,11 @@ class _MapWidgetState extends State<MapWidget> {
       key = appKey; //服务器端key
     }
     _addLocationListener();
+    _initTypeList().then((value) {
+      setState(() {
+        typeList = value;
+      });
+    });
     super.initState();
   }
 
@@ -186,10 +196,12 @@ class _MapWidgetState extends State<MapWidget> {
             .data
             .blogs;
     List<Marker> blogList = [];
+    int index = 0;
     for (var i in blogs) {
       blogList.add(
         Marker(
           point: LatLng(i.latitude, i.longitude),
+          key: ValueKey(index),
           width: defaultMapCardWidth,
           height: defaultMapCardHeight,
           builder: (context) {
@@ -197,6 +209,7 @@ class _MapWidgetState extends State<MapWidget> {
           },
         ),
       );
+      index++;
     }
     Widget blogCluster = _blogCluster;
     if (blogs.isNotEmpty) {
@@ -211,6 +224,7 @@ class _MapWidgetState extends State<MapWidget> {
           markers: blogList,
           showPolygon: false,
           builder: (context, markers) {
+            int index = (markers.first.key as ValueKey).value as int;
             return Stack(
               children: <Widget>[
                 SizedBox(
@@ -218,7 +232,7 @@ class _MapWidgetState extends State<MapWidget> {
                   width: defaultMapCardWidth,
                   child: HeroMode(
                     enabled: false,
-                    child: BlogItemInMap(blogs.last),
+                    child: BlogItemInMap(blogs[index]),
                   ),
                 ),
                 Positioned(
@@ -262,6 +276,13 @@ class _MapWidgetState extends State<MapWidget> {
     });
   }
 
+  Future<List<BuildingType>> _initTypeList() async {
+    Response resp = await _httpUtil.get(apiGetBuildingType);
+    BuildingTypeList typeList = ApiResponse.fromJson(
+        resp.body, (json) => BuildingTypeList.fromJson(json)).data;
+    return typeList.buildingTypes;
+  }
+
   void _getBuilding() async {
     final resp = await _httpUtil.get(
         '$apiSearchBuildingByLocation?latitude=${_nowPos.latitude}&longitude=${_nowPos.longitude}&range=$_range');
@@ -276,52 +297,95 @@ class _MapWidgetState extends State<MapWidget> {
     BuildingList buildingList =
         ApiResponse.fromJson(resp.body, (json) => BuildingList.fromJson(json))
             .data;
-    List<Marker> buildings = [];
+    Map<int, List<Marker>> _buildingMap = {};
     for (Building item in buildingList.buildings) {
-      buildings.add(
-        Marker(
-          point: LatLng(item.latitude, item.longitude),
-          width: 60,
-          height: 60,
-          builder: (context) {
-            return Hero(
-              tag: "/building/${item.id}",
-              child: Material(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100)),
-                borderOnForeground: false,
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    Get.toNamed("/building/${item.id}");
-                  },
-                  borderRadius: BorderRadius.circular(100),
-                  child: Card(
-                    elevation: defaultMapCardElevate,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100)),
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                    child: Center(
-                      child: item.icon == ""
-                          ? Icon(
-                              Icons.corporate_fare_rounded,
-                              size: 20,
-                              color: Theme.of(context).colorScheme.primary,
-                            )
-                          : CircleAvatar(
-                              foregroundImage: NetworkImage(item.icon),
-                            ),
-                    ),
+      Marker buildingMarker = Marker(
+        point: LatLng(item.latitude, item.longitude),
+        width: 60,
+        height: 60,
+        builder: (context) {
+          return Hero(
+            tag: "/building/${item.id}",
+            child: Material(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100)),
+              borderOnForeground: false,
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Get.toNamed("/building/${item.id}");
+                },
+                borderRadius: BorderRadius.circular(100),
+                child: Card(
+                  elevation: defaultMapCardElevate,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100)),
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                  child: Center(
+                    child: item.icon == ""
+                        ? Icon(
+                            Icons.corporate_fare_rounded,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.primary,
+                          )
+                        : CircleAvatar(
+                            foregroundImage: NetworkImage(item.icon),
+                          ),
                   ),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       );
+      if (_buildingMap.containsKey(item.typeId ?? -1)) {
+        _buildingMap[item.typeId ?? -1]!.add(buildingMarker);
+      } else {
+        _buildingMap[item.typeId ?? -1] = [buildingMarker];
+      }
+    }
+    this._buildingMap = _buildingMap;
+    _updateBuildingView();
+  }
+
+  void _updateBuildingView({updateId, isAdd}) {
+    if (isAdd != null) {
+      if (isAdd) {
+        setState(() {
+          _buildingLayers.add(
+            MarkerLayer(
+              markers: _buildingMap[updateId]!,
+            ),
+          );
+        });
+      } else {
+        setState(() {
+          _buildingLayers.removeWhere((element) {
+            if (element ==
+                MarkerLayer(
+                  markers: _buildingMap[updateId]!,
+                )) {
+              return true;
+            }
+            return false;
+          });
+        });
+      }
+    }
+    List<MarkerLayer> layers = [];
+    var keys = _buildingMap.keys.toList();
+    for (var i in keys) {
+      if (_buildingShow[i] ?? true) {
+        List<Marker> markers = _buildingMap[i]!;
+        layers.add(
+          MarkerLayer(
+            markers: markers,
+          ),
+        );
+      }
     }
     setState(() {
-      _buildings = buildings;
+      _buildingLayers = layers;
     });
   }
 
@@ -346,57 +410,10 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     isForeground = true;
     Size size = MediaQuery.of(context).size;
-    Widget? filterPanel;
-    if (_showFilter) {
-      filterPanel = Row(
-        children: [
-          FilterChip(
-            side: BorderSide.none,
-            label: const Text("动态"),
-            selected: _showBlogs,
-            onSelected: (value) {
-              setState(() {
-                _showBlogs = value;
-              });
-            },
-          ),
-          const SizedBox(
-            width: defaultPadding / 2,
-          ),
-          FilterChip(
-            side: BorderSide.none,
-            label: const Text("建筑"),
-            selected: _showBuilding,
-            onSelected: (value) {
-              setState(() {
-                _showBuilding = value;
-              });
-            },
-          ),
-          const SizedBox(
-            width: defaultPadding / 2,
-          ),
-          FilterChip(
-            side: BorderSide.none,
-            label: const Text("用户"),
-            selected: _showUser,
-            onSelected: (value) {
-              setState(() {
-                _showUser = value;
-              });
-            },
-          ),
-        ],
-      );
-    }
 
     List<Widget> showMarkers = [];
     if (_showBuilding) {
-      showMarkers.add(
-        MarkerLayer(
-          markers: _buildings,
-        ),
-      );
+      showMarkers.addAll(_buildingLayers);
     }
     if (_showBlogs) {
       showMarkers.add(
@@ -422,6 +439,7 @@ class _MapWidgetState extends State<MapWidget> {
             FlutterMap(
               mapController: mapController,
               options: MapOptions(
+                interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
                 center: pos,
                 maxZoom: 18.2,
                 zoom: 17,
@@ -464,7 +482,6 @@ class _MapWidgetState extends State<MapWidget> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    filterPanel ?? const SizedBox(),
                     Container(
                       width: min(size.width - defaultPadding * 2 - 65, 500),
                       decoration: BoxDecoration(
@@ -506,13 +523,9 @@ class _MapWidgetState extends State<MapWidget> {
                             flex: 1,
                             child: IconButton(
                               padding: const EdgeInsets.all(0),
-                              icon: _showFilter
-                                  ? const Icon(Icons.filter_alt_off_rounded)
-                                  : const Icon(Icons.filter_alt_rounded),
+                              icon: const Icon(Icons.filter_alt_rounded),
                               onPressed: () {
-                                setState(() {
-                                  _showFilter = !_showFilter;
-                                });
+                                showBottomSheet();
                               },
                               color: Theme.of(context).colorScheme.primary,
                             ),
@@ -550,6 +563,7 @@ class _MapWidgetState extends State<MapWidget> {
             FlutterMap(
               mapController: mapController,
               options: MapOptions(
+                interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
                 center: pos,
                 maxZoom: 18.2,
                 zoom: 17,
@@ -592,7 +606,6 @@ class _MapWidgetState extends State<MapWidget> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    filterPanel ?? const SizedBox(),
                     Container(
                       width: min(size.width - defaultPadding * 2 - 65, 500),
                       decoration: BoxDecoration(
@@ -634,14 +647,8 @@ class _MapWidgetState extends State<MapWidget> {
                             flex: 1,
                             child: IconButton(
                               padding: const EdgeInsets.all(0),
-                              icon: _showFilter
-                                  ? const Icon(Icons.filter_alt_off_rounded)
-                                  : const Icon(Icons.filter_alt_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  _showFilter = !_showFilter;
-                                });
-                              },
+                              icon: const Icon(Icons.filter_alt_rounded),
+                              onPressed: showBottomSheet,
                               color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
@@ -676,5 +683,128 @@ class _MapWidgetState extends State<MapWidget> {
     super.dispose();
 
     isForeground = false;
+  }
+
+  void showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      useSafeArea: true,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            Widget filterPanel = Row(
+              children: [
+                FilterChip(
+                  side: BorderSide.none,
+                  label: const Text("动态"),
+                  selected: _showBlogs,
+                  onSelected: (value) {
+                    setState(() {
+                      _showBlogs = value;
+                    });
+                    this.setState(() {
+                      _showBlogs = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  width: defaultPadding / 2,
+                ),
+                FilterChip(
+                  side: BorderSide.none,
+                  label: const Text("建筑"),
+                  selected: _showBuilding,
+                  onSelected: (value) {
+                    setState(() {
+                      _showBuilding = value;
+                    });
+                    this.setState(() {
+                      _showBuilding = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  width: defaultPadding / 2,
+                ),
+                FilterChip(
+                  side: BorderSide.none,
+                  label: const Text("用户"),
+                  selected: _showUser,
+                  onSelected: (value) {
+                    setState(() {
+                      _showUser = value;
+                    });
+                    this.setState(() {
+                      _showUser = value;
+                    });
+                  },
+                ),
+              ],
+            );
+            List<Widget> typeButtons = [];
+            for (var i in typeList) {
+              typeButtons.add(
+                FilterChip(
+                    side: BorderSide.none,
+                    avatar: const Icon(Icons.school_rounded),
+                    label: Text(i.name),
+                    showCheckmark: false,
+                    selected: _buildingShow[i.id] ?? true,
+                    onSelected: _showBuilding
+                        ? (value) {
+                            setState(() {
+                              _buildingShow[i.id] = value;
+                            });
+                            this.setState(() {
+                              _buildingShow[i.id] = value;
+                            });
+                            _updateBuildingView(updateId: i.id, isAdd: value);
+                          }
+                        : null),
+              );
+            }
+            return Container(
+              padding: const EdgeInsets.all(defaultPadding),
+              height: 300, //对话框高度就是此高度
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Center(
+                        child: Container(
+                      width: 30,
+                      height: 5,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: Theme.of(context).colorScheme.primary),
+                    )),
+                    const SizedBox(
+                      height: defaultPadding,
+                    ),
+                    filterPanel,
+                    const SizedBox(
+                      height: defaultPadding,
+                    ),
+                    Expanded(
+                        child: ListView(
+                      children: [
+                        const CardTitle(
+                          "建筑筛选",
+                          watchMore: false,
+                        ),
+                        Wrap(
+                          spacing: defaultPadding / 2, // 主轴(水平)方向间距
+                          runSpacing: 0, // 纵轴（垂直）方向间距
+                          children: typeButtons,
+                        ),
+                      ],
+                    )),
+                  ]),
+            );
+          },
+        );
+      },
+    );
   }
 }

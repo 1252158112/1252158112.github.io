@@ -57,12 +57,11 @@ class ImageEmbedBuilderWeb implements EmbedBuilder {
     UniversalUI().platformViewRegistry.registerViewFactory(
         imageUrl, (viewId) => html.ImageElement()..src = imageUrl);
     return Obx(() {
-      var showWidth = ResponsiveWidget.isMediumScreen(context)
-          ? size.width * 0.5
-          : (ResponsiveWidget.isLargeScreen(context))
-              ? size.width * 0.25
-              : size.width * 0.8;
+      var showWidth = size.width;
       var showHeight = showWidth * height() / width();
+      if (size.width > 650) {
+        showHeight /= 2;
+      }
       return Padding(
         padding: EdgeInsets.symmetric(
           horizontal: (size.width - showWidth) / 2,

@@ -79,7 +79,10 @@ class LibraryStateUtil extends GetxController {
       loginForm = value ?? {};
     });
     getLikeSeat();
-    initShortcuts();
+    if (GetPlatform.isAndroid) {
+      initShortcuts();
+    }
+
     super.onInit();
   }
 }

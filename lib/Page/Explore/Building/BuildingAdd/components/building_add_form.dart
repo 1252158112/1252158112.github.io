@@ -35,7 +35,7 @@ class _BuildingAddForm extends State<BuildingAddForm> {
   late final String key;
   bool _isEdit = false;
   bool _isLoadingBuilding = false;
-  late Building _building;
+  Building? _building;
   final _nameController = TextEditingController();
   final _introduceController = TextEditingController();
   final _buildingTypeController = TextEditingController();
@@ -175,7 +175,7 @@ class _BuildingAddForm extends State<BuildingAddForm> {
     List<String> picUrls = await _getPicUrl(images);
     String pics = picUrls.join(',');
     _building = Building(
-        id: _building.id,
+        id: _building?.id ?? -1,
         name: name,
         icon: iconUrls[0],
         images: pics,
@@ -185,9 +185,9 @@ class _BuildingAddForm extends State<BuildingAddForm> {
         typeId: _select.id);
     Response addResp;
     if (_isEdit) {
-      addResp = await _httpUtil.put(apiAddBuilding, _building.toJson());
+      addResp = await _httpUtil.put(apiAddBuilding, _building!.toJson());
     } else {
-      addResp = await _httpUtil.post(apiAddBuilding, _building.toJson());
+      addResp = await _httpUtil.post(apiAddBuilding, _building!.toJson());
     }
     if (addResp.status.hasError) {
       setState(() {
@@ -318,13 +318,13 @@ class _BuildingAddForm extends State<BuildingAddForm> {
             maxLength: 20,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurfaceVariant),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "建筑名称",
               hintText: "输入你想添加的建筑名称",
               filled: true,
-              fillColor: Colors.white,
-              prefixIcon: Icon(Icons.corporate_fare_rounded),
-              border: OutlineInputBorder(
+              fillColor: Theme.of(context).colorScheme.background,
+              prefixIcon: const Icon(Icons.corporate_fare_rounded),
+              border: const OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius:
                     BorderRadius.all(Radius.circular(defaultBorderRadius)),
@@ -333,10 +333,10 @@ class _BuildingAddForm extends State<BuildingAddForm> {
           ),
           DropdownMenu<BuildingType>(
             width: size.width - defaultPadding * 2,
-            inputDecorationTheme: const InputDecorationTheme(
+            inputDecorationTheme: InputDecorationTheme(
               filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
+              fillColor: Theme.of(context).colorScheme.background,
+              border: const OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius:
                     BorderRadius.all(Radius.circular(defaultBorderRadius)),
@@ -436,13 +436,13 @@ class _BuildingAddForm extends State<BuildingAddForm> {
             maxLength: 200,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurfaceVariant),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "建筑介绍(选填)",
               hintText: "输入你想添加的建筑的简介",
               filled: true,
-              fillColor: Colors.white,
-              prefixIcon: Icon(Icons.bookmark),
-              border: OutlineInputBorder(
+              fillColor: Theme.of(context).colorScheme.background,
+              prefixIcon: const Icon(Icons.bookmark),
+              border: const OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius:
                     BorderRadius.all(Radius.circular(defaultBorderRadius)),
@@ -478,7 +478,7 @@ class _BuildingAddForm extends State<BuildingAddForm> {
                                 Theme.of(context).colorScheme.tertiary),
                         onPressed: () {
                           _httpUtil.request(apiAddBuilding, "delete",
-                              body: _building.toJson());
+                              body: _building!.toJson());
                           Get.back();
                         },
                         child: const Padding(
@@ -514,8 +514,8 @@ class _BuildingAddForm extends State<BuildingAddForm> {
               .load(loadBuilding.icon))
           .buffer
           .asUint8List();
-      ImageFile iconFile = ImageFile(_building.icon,
-          extension: 'png', name: _building.icon, bytes: iconData);
+      ImageFile iconFile = ImageFile(_building!.icon,
+          extension: 'png', name: _building!.icon, bytes: iconData);
       setState(
         () {
           _controller.addImage(iconFile);
@@ -540,7 +540,7 @@ class _BuildingAddForm extends State<BuildingAddForm> {
     }
 
     setState(() {
-      pos = LatLng(_building.latitude, _building.longitude);
+      pos = LatLng(_building!.latitude, _building!.longitude);
       _isLoadingBuilding = false;
     });
   }

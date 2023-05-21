@@ -46,130 +46,149 @@ class _VisualScreenState extends State<VisualScreen>
   void _showMenu(context) {
     showModalBottomSheet(
         context: context,
-        isScrollControlled: false,
+        isScrollControlled: true,
         useRootNavigator: true,
         useSafeArea: true,
         builder: (BuildContext context) {
-          return Container(
-            padding: const EdgeInsets.all(defaultPadding),
-            height: 300, //对话框高度就是此高度
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Center(
-                    child: Text(
-                      "工具栏",
-                      style: Theme.of(context).textTheme.titleLarge,
+          return StatefulBuilder(builder: (context, setState) {
+            return Container(
+              padding: const EdgeInsets.all(defaultPadding),
+              height: 300, //对话框高度就是此高度
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Center(
+                        child: Container(
+                      width: 30,
+                      height: 5,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: Theme.of(context).colorScheme.primary),
+                    )),
+                    const SizedBox(
+                      height: defaultPadding,
                     ),
-                  ),
-                  const SizedBox(
-                    height: defaultPadding,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
+                    Row(
+                      children: [
+                        Expanded(
                           child: IconButton(
-                              onPressed: () {
-                                Get.toNamed("blog/add?type=article");
-                              },
-                              style: ButtonStyle(
-                                textStyle: MaterialStateProperty.all(
-                                  const TextStyle(height: 1.8),
-                                ),
-                              ),
-                              icon: Column(
-                                children: const [
-                                  Icon(Icons.article),
-                                  Text("发表图文")
-                                ],
-                              ))),
-                      Expanded(
+                            onPressed: () {
+                              Get.toNamed("blog/add?type=article");
+                            },
+                            style: IconButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer),
+                            icon: Column(
+                              children: const [
+                                Icon(Icons.article),
+                                Text("发表图文")
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: defaultPadding / 2,
+                        ),
+                        Expanded(
+                            child: IconButton(
+                                onPressed: () {
+                                  Get.toNamed("blog/add");
+                                },
+                                style: IconButton.styleFrom(
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer),
+                                icon: Column(
+                                  children: const [
+                                    Icon(Icons.edit_document),
+                                    Text("发表动态")
+                                  ],
+                                )))
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
                           child: IconButton(
-                              onPressed: () {
-                                Get.toNamed("blog/add");
-                              },
-                              style: ButtonStyle(
-                                textStyle: MaterialStateProperty.all(
-                                  const TextStyle(height: 1.8),
-                                ),
-                              ),
-                              icon: Column(
-                                children: const [
-                                  Icon(Icons.edit_document),
-                                  Text("发表动态")
-                                ],
-                              )))
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
+                            onPressed: () {
+                              Get.toNamed('/building/add');
+                            },
+                            style: IconButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer),
+                            icon: Column(
+                              children: const [
+                                Icon(Icons.corporate_fare_rounded),
+                                Text("添加建筑")
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: defaultPadding / 2,
+                        ),
+                        Expanded(
                           child: IconButton(
-                              onPressed: () {
-                                Get.toNamed('/building/add');
-                              },
-                              style: ButtonStyle(
-                                textStyle: MaterialStateProperty.all(
-                                  const TextStyle(height: 1.8),
-                                ),
-                              ),
-                              icon: Column(
-                                children: const [
-                                  Icon(Icons.corporate_fare_rounded),
-                                  Text("添加建筑")
-                                ],
-                              ))),
-                      Expanded(
+                            onPressed: () {
+                              Get.toNamed('/topic/add');
+                            },
+                            style: IconButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer),
+                            icon: Column(
+                              children: const [
+                                Icon(Icons.control_point_duplicate_rounded),
+                                Text("添加话题")
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: defaultPadding / 2,
+                        ),
+                        Expanded(
                           child: IconButton(
-                              onPressed: () {
-                                Get.toNamed('/topic/add');
-                              },
-                              style: ButtonStyle(
-                                textStyle: MaterialStateProperty.all(
-                                  const TextStyle(height: 1.8),
-                                ),
-                              ),
-                              icon: Column(
-                                children: const [
-                                  Icon(Icons.control_point_duplicate_rounded),
-                                  Text("添加话题")
-                                ],
-                              ))),
-                      Expanded(
-                          child: IconButton(
-                              onPressed: () {},
-                              style: ButtonStyle(
-                                textStyle: MaterialStateProperty.all(
-                                  const TextStyle(height: 1.8),
-                                ),
-                              ),
-                              icon: Column(
-                                children: const [
-                                  Icon(Icons.qr_code),
-                                  Text("扫一扫")
-                                ],
-                              ))),
-                      Expanded(
-                          child: IconButton(
-                              onPressed: () => _httpUtil.logout(),
-                              style: ButtonStyle(
-                                textStyle: MaterialStateProperty.all(
-                                  const TextStyle(height: 1.8),
-                                ),
-                              ),
-                              icon: Column(
-                                children: const [
-                                  Icon(Icons.logout_rounded),
-                                  Text("退出登录")
-                                ],
-                              )))
-                    ],
-                  ),
-                  const SizedBox(
-                    height: defaultPadding,
-                  ),
-                ]),
-          );
+                            onPressed: () =>
+                                Get.toNamed("/tool/library_tool/scan"),
+                            style: IconButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer),
+                            icon: Column(
+                              children: const [
+                                Icon(Icons.qr_code),
+                                Text("扫一扫")
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: defaultPadding / 2,
+                        ),
+                        Expanded(
+                            child: IconButton(
+                                onPressed: () => _httpUtil.logout(),
+                                style: IconButton.styleFrom(
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer),
+                                icon: Column(
+                                  children: const [
+                                    Icon(Icons.logout_rounded),
+                                    Text("退出登录")
+                                  ],
+                                )))
+                      ],
+                    ),
+                    const SizedBox(
+                      height: defaultPadding,
+                    ),
+                  ]),
+            );
+          });
         });
   }
 
