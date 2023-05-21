@@ -795,7 +795,7 @@ class _MapWidgetState extends State<MapWidget> {
                         ),
                         Wrap(
                           spacing: defaultPadding / 2, // 主轴(水平)方向间距
-                          runSpacing: 0, // 纵轴（垂直）方向间距
+                          runSpacing: defaultPadding / 2, // 纵轴（垂直）方向间距
                           children: typeButtons,
                         ),
                       ],
