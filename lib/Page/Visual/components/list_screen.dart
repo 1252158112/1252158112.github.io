@@ -114,11 +114,12 @@ class _ListBlogScreenState extends State<ListBlogScreen>
         ApiResponse.fromJson(response.body, ((json) => BlogList.fromJson(json)))
             .data
             .blogs;
-    _blogs.addAll(blogs);
+    _blogs = blogs;
+    for (var i in _blogs) {
+      listWidget.add(BlogListItem(i));
+    }
+    print(listWidget);
     setState(() {
-      for (var i in _blogs) {
-        listWidget.add(BlogListItem(i));
-      }
       if (blogs.length < blogPageSize) {
         notMore = true;
       }

@@ -522,7 +522,7 @@ class _BuildingAddForm extends State<BuildingAddForm> {
         },
       );
     }
-    if (loadBuilding.images != "") {
+    if (loadBuilding.images != "https://community.lejw.top/") {
       for (String url in loadBuilding.images.split(',')) {
         if (url != "") {
           var imageData = (await NetworkAssetBundle(Uri.parse(url)).load(url))

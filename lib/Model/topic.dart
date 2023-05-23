@@ -36,6 +36,9 @@ class Topic {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    if (id != null) {
+      data['id'] = id;
+    }
     data['name'] = name;
     data['icon'] = icon;
     data['introduce'] = introduce ?? '';

@@ -22,7 +22,7 @@ import 'dart:ui' as ui;
 import 'routes.dart';
 
 void main() {
-  if (GetPlatform.isAndroid) {
+  if (GetPlatform.isAndroid && !GetPlatform.isWeb) {
     Workmanager().initialize(callbackDispatcher, isInDebugMode: kDebugMode);
   }
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -98,7 +98,7 @@ class MyApp extends StatelessWidget {
     Get.put(LibraryStateUtil());
     Get.put(ScheduleUtil());
     final LibraryStateUtil libraryStateUtil = Get.find();
-    if (GetPlatform.isAndroid) {
+    if (GetPlatform.isAndroid && !GetPlatform.isWeb) {
       final FlutterShortcuts flutterShortcuts = Get.find();
       flutterShortcuts.initialize(debug: true);
 

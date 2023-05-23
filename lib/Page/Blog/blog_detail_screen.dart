@@ -481,7 +481,8 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
           _isLoadingBlog = false;
         });
       } catch (err) {
-        Get.snackbar('错误', err.toString());
+        // Get.snackbar('错误', err.toString());
+        Get.back();
       }
     } else {
       Get.snackbar('提示', '获取动态失败');

@@ -140,7 +140,8 @@ class _TopicAddForm extends State<TopicAddForm> {
     var topic = Topic(name: name, introduce: introduce, icon: picUrls.first);
     var addResp;
     if (_isEdit) {
-      topic.id = _topic.id;
+      topic.id = int.parse(widget.topicId!);
+      print(topic.id);
       addResp = await _httpUtil.put(apiAddTopic, topic.toJson());
     } else {
       addResp = await _httpUtil.post(apiAddTopic, topic.toJson());

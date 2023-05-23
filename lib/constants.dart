@@ -10,9 +10,9 @@ const double defaultMapCardElevate = 3;
 const double defaultMapCardHeight = 100;
 const double defaultMapCardWidth = 145;
 const double defaultEmojiHeight = 250;
-// const api = 'http://192.168.137.1:9080/';
+const api = 'http://192.168.137.1:9080/';
 //
-const api = 'https://community.lejw.top/';
+// const api = 'https://community.lejw.top/';
 
 const pageSize = 5;
 const blogPageSize = 5;

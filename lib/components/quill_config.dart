@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -11,7 +12,7 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tuple/tuple.dart';
 import 'package:vcommunity_flutter/util/user_state_util.dart';
-
+import 'package:flutter/material.dart' as md;
 import '../Model/DataModel/update_file_response.dart';
 import '../Model/api_response.dart';
 import '../constants.dart';
@@ -124,6 +125,58 @@ class QuillConfig {
     return "";
   }
 
+  void _onLaunchUrl(value) {
+    if (GetUtils.isURL(value)) {
+      showModalBottomSheet(
+          context: Get.context!,
+          isScrollControlled: false,
+          useRootNavigator: true,
+          useSafeArea: true,
+          builder: (BuildContext context) {
+            return SizedBox(
+                height: 250, //对话框高度就是此高度
+                child: ListView(
+                  children: [
+                    AppBar(
+                      backgroundColor: Colors.transparent,
+                      title: const md.Text("点击跳转"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(defaultPadding),
+                      child: AnyLinkPreview(
+                        link: value,
+                        proxyUrl:
+                            GetPlatform.isWeb ? "http://cors.lejw.top/" : null,
+                        displayDirection: UIDirection.uiDirectionHorizontal,
+                        cache: const Duration(hours: 1),
+                        borderRadius: defaultBorderRadius,
+                        previewHeight: 180,
+                        backgroundColor:
+                            Theme.of(Get.context!).colorScheme.background,
+                        errorWidget: Container(
+                          color: Theme.of(Get.context!).colorScheme.background,
+                          child: const md.Center(
+                            child: md.Text('网页无法打开'),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ));
+          });
+    } else {
+      Get.toNamed(value.split('https://')[1]);
+    }
+  }
+
+  void _getMetadata(String url) async {
+    Metadata? _metadata = await AnyLinkPreview.getMetadata(
+      link: url,
+      cache: const Duration(days: 7),
+      proxyUrl: "https://cors-anywhere.herokuapp.com/", // Needed for web app
+    );
+  }
+
   Widget onlyShow(BuildContext context, String content, String blogId) {
     Color onBackground = Theme.of(context).colorScheme.onBackground;
     QuillController quillController = QuillController(
@@ -136,12 +189,7 @@ class QuillConfig {
       scrollController: ScrollController(),
       scrollable: false,
       padding: EdgeInsets.zero,
-      onLaunchUrl: (value) {
-        if (value.contains('https://')) {
-          value = value.replaceAll('https://', '');
-        }
-        Get.toNamed(value);
-      },
+      onLaunchUrl: _onLaunchUrl,
       onTapUp: (a, b) {
         Get.toNamed('/blog/$blogId');
         return true;
@@ -207,6 +255,7 @@ class QuillConfig {
   }
 
   Widget onlyShowLarge(BuildContext context, String content) {
+    // _getMetadata("https://www.baidu.com");
     Color onBackground = Theme.of(context).colorScheme.onBackground;
     QuillController quillController = QuillController(
         document: Document.fromJson(jsonDecode(content)),
@@ -218,12 +267,7 @@ class QuillConfig {
       scrollController: ScrollController(),
       scrollable: false,
       padding: EdgeInsets.zero,
-      onLaunchUrl: (value) {
-        if (value.contains('https://')) {
-          value = value.replaceAll('https://', '');
-        }
-        Get.toNamed(value);
-      },
+      onLaunchUrl: _onLaunchUrl,
       focusNode: FocusNode(skipTraversal: true),
       autoFocus: false,
       expands: false,
@@ -296,12 +340,7 @@ class QuillConfig {
       scrollController: ScrollController(),
       scrollable: false,
       padding: EdgeInsets.zero,
-      onLaunchUrl: (value) {
-        if (value.contains('https://')) {
-          value = value.replaceAll('https://', '');
-        }
-        Get.toNamed(value);
-      },
+      onLaunchUrl: _onLaunchUrl,
       focusNode: FocusNode(),
       autoFocus: false,
       expands: false,

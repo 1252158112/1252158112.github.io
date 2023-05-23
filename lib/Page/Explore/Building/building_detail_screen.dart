@@ -339,117 +339,127 @@ class _BuildingDetailScreenState extends State<BuildingDetailScreen> {
     if (!GetPlatform.isWeb) {
       generator = await _fetchImageColor(_building!.icon);
     }
-    setState(() {
-      _iconThemeColor = generator?.dominantColor?.color ??
-          Theme.of(context).colorScheme.primary;
-      double backgroundBrightness = _iconThemeColor!.computeLuminance();
-      Color textColor =
-          backgroundBrightness > 0.5 ? Colors.black : Colors.white;
+    setState(
+      () {
+        _iconThemeColor = generator?.dominantColor?.color ??
+            Theme.of(context).colorScheme.primary;
+        double backgroundBrightness = _iconThemeColor!.computeLuminance();
+        Color textColor =
+            backgroundBrightness > 0.5 ? Colors.black : Colors.white;
 
-      _iconSecondaryThemeColor = textColor.withAlpha(25);
-      _onIconThemeColor = textColor.withAlpha(200);
-      pics.add(
-        Padding(
-          padding: const EdgeInsets.fromLTRB(defaultPadding, defaultPadding / 2,
-              defaultPadding, defaultPadding * 1.5),
-          child: Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(defaultBorderRadius),
-              boxShadow: [
-                BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withAlpha(50),
-                    offset: const Offset(4, 3.4),
-                    blurRadius: 6,
-                    spreadRadius: 1.5)
-              ],
-            ),
-            child: FlutterMap(
-              options: MapOptions(
-                enableScrollWheel: false,
-                enableMultiFingerGestureRace: false,
-                interactiveFlags: InteractiveFlag.none,
-                center: LatLng(_building!.latitude, _building!.longitude),
-                zoom: 16,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate:
-                      "https://t0.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=$key",
-                ),
-                TileLayer(
-                  backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-                  urlTemplate:
-                      "https://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=$key",
-                ),
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: LatLng(_building!.latitude, _building!.longitude),
-                      width: 60,
-                      height: 60,
-                      builder: (context) {
-                        return Card(
-                          elevation: defaultMapCardElevate,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100)),
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                          child: Center(
-                            child: Icon(
-                              Icons.domain_rounded,
-                              size: 20,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-      );
-      var picUrls = _building!.images.split(',');
-      for (var item in picUrls) {
+        _iconSecondaryThemeColor = textColor.withAlpha(25);
+        _onIconThemeColor = textColor.withAlpha(200);
         pics.add(
-          InkWell(
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
-            onTap: () {
-              Get.toNamed("/imageView?path=$item");
-            },
-            child: Hero(
-              tag: item,
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(defaultPadding,
-                      defaultPadding / 2, defaultPadding, defaultPadding * 1.5),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(defaultBorderRadius),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withAlpha(50),
-                            offset: const Offset(4, 3.4),
-                            blurRadius: 6,
-                            spreadRadius: 1.5)
-                      ],
-                      image: DecorationImage(
-                          image: NetworkImage(item), fit: BoxFit.cover),
-                    ),
-                  ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(defaultPadding,
+                defaultPadding / 2, defaultPadding, defaultPadding * 1.5),
+            child: Container(
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(defaultBorderRadius),
+                boxShadow: [
+                  BoxShadow(
+                      color:
+                          Theme.of(context).colorScheme.primary.withAlpha(50),
+                      offset: const Offset(4, 3.4),
+                      blurRadius: 6,
+                      spreadRadius: 1.5)
+                ],
+              ),
+              child: FlutterMap(
+                options: MapOptions(
+                  enableScrollWheel: false,
+                  enableMultiFingerGestureRace: false,
+                  interactiveFlags: InteractiveFlag.none,
+                  center: LatLng(_building!.latitude, _building!.longitude),
+                  zoom: 16,
                 ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        "https://t0.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=$key",
+                  ),
+                  TileLayer(
+                    backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+                    urlTemplate:
+                        "https://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=$key",
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        point:
+                            LatLng(_building!.latitude, _building!.longitude),
+                        width: 60,
+                        height: 60,
+                        builder: (context) {
+                          return Card(
+                            elevation: defaultMapCardElevate,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100)),
+                            color: Theme.of(context).colorScheme.inversePrimary,
+                            child: Center(
+                              child: Icon(
+                                Icons.domain_rounded,
+                                size: 20,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
           ),
         );
-      }
-    });
+        if (_building!.images != 'https://community.lejw.top/') {
+          var picUrls = _building!.images.split(',');
+          for (var item in picUrls) {
+            pics.add(
+              InkWell(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                onTap: () {
+                  Get.toNamed("/imageView?path=$item");
+                },
+                child: Hero(
+                  tag: item,
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                          defaultPadding,
+                          defaultPadding / 2,
+                          defaultPadding,
+                          defaultPadding * 1.5),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(defaultBorderRadius),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withAlpha(50),
+                                offset: const Offset(4, 3.4),
+                                blurRadius: 6,
+                                spreadRadius: 1.5)
+                          ],
+                          image: DecorationImage(
+                              image: NetworkImage(item), fit: BoxFit.cover),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+      },
+    );
   }
 
   _getBlogsByBuilding(int buildingId, {int blogType = 0}) async {
