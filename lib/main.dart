@@ -132,7 +132,7 @@ class MyApp extends StatelessWidget {
           darkTheme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.dark,
-            // fontFamily: 'OPlusSans3',
+            fontFamily: 'OPlusSans3',
             colorSchemeSeed: darkDynamic?.primary ?? seed,
             cardTheme: const CardTheme(
               elevation: 0,
@@ -161,7 +161,7 @@ class MyApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           theme: ThemeData(
             useMaterial3: true,
-            fontFamily: GetPlatform.isWeb ? null : 'OPlusSans3',
+            fontFamily: 'OPlusSans3',
             colorSchemeSeed: lightDynamic?.primary ?? seed,
             scaffoldBackgroundColor: ColorScheme.fromSeed(
               seedColor: lightDynamic?.primary ?? seed,

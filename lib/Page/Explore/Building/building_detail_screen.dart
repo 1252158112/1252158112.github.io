@@ -333,8 +333,14 @@ class _BuildingDetailScreenState extends State<BuildingDetailScreen> {
       Get.back();
     }
     final resp = await _httpUtil.get(apiGetBuildingDetail + id);
-    _building =
-        ApiResponse.fromJson(resp.body, (json) => Building.fromJson(json)).data;
+    try {
+      _building =
+          ApiResponse.fromJson(resp.body, (json) => Building.fromJson(json))
+              .data;
+    } catch (e) {
+      Get.back();
+    }
+
     PaletteGenerator? generator;
     if (!GetPlatform.isWeb) {
       generator = await _fetchImageColor(_building!.icon);

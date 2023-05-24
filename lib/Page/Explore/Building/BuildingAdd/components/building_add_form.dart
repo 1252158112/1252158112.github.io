@@ -510,6 +510,7 @@ class _BuildingAddForm extends State<BuildingAddForm> {
       }
     }
     if (loadBuilding.icon != "") {
+      print(loadBuilding.icon);
       var iconData = (await NetworkAssetBundle(Uri.parse(loadBuilding.icon))
               .load(loadBuilding.icon))
           .buffer

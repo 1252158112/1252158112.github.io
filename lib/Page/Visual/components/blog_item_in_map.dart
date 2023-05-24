@@ -82,8 +82,9 @@ class BlogItemInMap extends StatelessWidget {
         child: InkWell(
           onTap: () => Get.toNamed('/blog/${blog.id}'),
           child: Container(
+            clipBehavior: Clip.hardEdge,
               padding: const EdgeInsets.fromLTRB(
-                  defaultPadding / 4, defaultPadding / 6, 0, 0),
+                  defaultPadding / 4, defaultPadding / 4, 0, 0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(defaultBorderRadius),
                 boxShadow: [
