@@ -53,9 +53,6 @@ class Building {
     if (json['data'] != null) {
       List images = (json['data']['images'] as String).split(',');
       List urls = [];
-      for (String i in images) {
-        urls.add(api + i);
-      }
       json['data']['images'] = urls.join(',');
     }
     return Building(
@@ -64,7 +61,7 @@ class Building {
       name: json['data']['name'] ?? "",
       icon: json['data']['icon'] == null || json['data']['icon'] == ""
           ? ""
-          : api + json['data']['icon'],
+          : json['data']['icon'],
       images: json['data']['images'] ?? "",
       longitude: json['data']['longitude'] ?? 0.0,
       latitude: json['data']['latitude'] ?? 0.0,

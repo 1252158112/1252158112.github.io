@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vcommunity_flutter/Model/blog.dart';
 
+import '../../../components/imagePageViewContainer.dart';
 import '../../../components/quill_config.dart';
 import '../../../constants.dart';
 import '../../../util/string_util.dart';
@@ -45,6 +46,8 @@ class _BlogDetailWidgetState extends State<BlogDetailWidget> {
     List<String> backgroundImages = images;
     Size size = MediaQuery.of(context).size;
     double picHeight = min(size.height * 0.6, 350);
+    double picWidth =
+        size.width > largeScreenWidth ? size.width / 2 : size.width;
     return AnimatedBuilder(
       animation: _pageNotifier,
       builder: (context, _) {
@@ -79,9 +82,13 @@ class _BlogDetailWidgetState extends State<BlogDetailWidget> {
                 }),
                 child: ImageFiltered(
                   imageFilter: ImageFilter.blur(sigmaY: 10, sigmaX: 10),
-                  child: Image.network(
-                    backgroundImages[currentIndex],
-                    fit: BoxFit.fill,
+                  child: SizedBox(
+                    height: picHeight,
+                    width: picWidth,
+                    child: Image.network(
+                      backgroundImages[currentIndex],
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
               ),
@@ -102,9 +109,13 @@ class _BlogDetailWidgetState extends State<BlogDetailWidget> {
                 }),
                 child: ImageFiltered(
                   imageFilter: ImageFilter.blur(sigmaY: 10, sigmaX: 10),
-                  child: Image.network(
-                    backgroundImages[nextPageIndex],
-                    fit: BoxFit.fill,
+                  child: SizedBox(
+                    height: picHeight,
+                    width: picWidth,
+                    child: Image.network(
+                      backgroundImages[nextPageIndex],
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
               ),
@@ -116,21 +127,7 @@ class _BlogDetailWidgetState extends State<BlogDetailWidget> {
                 _pos = value;
               }),
               itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    Get.toNamed("/imageView?path=${images[currentIndex]}");
-                  },
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(images[index]),
-                            fit: BoxFit.contain),
-                      ),
-                    ),
-                  ),
-                );
+                return PageViewContainer(images[index]);
               },
             ),
           ],
@@ -154,7 +151,7 @@ class _BlogDetailWidgetState extends State<BlogDetailWidget> {
         noPic = true;
         break;
       }
-      images.add(api + i);
+      images.add(i);
     }
     for (int i = 0; i < picLen; i++) {
       indicater.add(InkWell(
@@ -204,12 +201,13 @@ class _BlogDetailWidgetState extends State<BlogDetailWidget> {
               height: picHeight,
               child: imagePageView(context, images),
             ),
-            const SizedBox(
-              height: defaultPadding,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: indicater,
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+              color: Theme.of(context).colorScheme.onInverseSurface,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: indicater,
+              ),
             ),
           ];
     return Container(

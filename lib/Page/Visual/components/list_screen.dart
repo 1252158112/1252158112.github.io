@@ -118,7 +118,6 @@ class _ListBlogScreenState extends State<ListBlogScreen>
     for (var i in _blogs) {
       listWidget.add(BlogListItem(i));
     }
-    print(listWidget);
     setState(() {
       if (blogs.length < blogPageSize) {
         notMore = true;

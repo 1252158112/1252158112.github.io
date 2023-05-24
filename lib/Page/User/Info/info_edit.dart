@@ -114,10 +114,10 @@ class _UserEditScreenState extends State<UserEditScreen> {
       if (picUrls.isNotEmpty) {
         user!.icon = picUrls.first;
       } else {
-        user!.icon = user!.icon.split(api)[1];
+        user!.icon = user!.icon.split('')[1];
       }
     } else {
-      user!.icon = user!.icon.split(api)[1];
+      user!.icon = user!.icon.split('')[1];
     }
     var updateResp = await _httpUtil.put(apiUserInfo, user!.toJson());
     if (updateResp.status.hasError) {

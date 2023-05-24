@@ -19,9 +19,7 @@ class ImageCardWithShow extends StatelessWidget {
             borderRadius: borderRadius, color: Colors.transparent),
       );
     }
-    if (!url!.contains(api)) {
-      url = api + url!;
-    }
+
     if (hasHero) {
       InkWell(
         onTap: () => Get.toNamed("/imageView?path=$url"),

@@ -116,7 +116,7 @@ class _UserHistoryBlogsState extends State<UserHistoryBlogs> {
         ApiResponse.fromJson(response.body, ((json) => BlogList.fromJson(json)))
             .data
             .blogs;
-    _blogs.addAll(blogs);
+    _blogs = blogs;
     setState(() {
       for (var i in _blogs) {
         listWidget.add(BlogListItem(i));

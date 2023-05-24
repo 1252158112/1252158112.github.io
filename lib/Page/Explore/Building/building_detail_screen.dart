@@ -414,7 +414,7 @@ class _BuildingDetailScreenState extends State<BuildingDetailScreen> {
             ),
           ),
         );
-        if (_building!.images != 'https://community.lejw.top/') {
+        if (_building!.images != '') {
           var picUrls = _building!.images.split(',');
           for (var item in picUrls) {
             pics.add(

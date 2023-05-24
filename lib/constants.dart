@@ -7,18 +7,20 @@ const double defaultBorderRadius = 11;
 const double middleBorderRadius = 18;
 const double largeBorderRadius = 24;
 const double defaultMapCardElevate = 3;
-const double defaultMapCardHeight = 100;
-const double defaultMapCardWidth = 145;
+const double defaultMapCardHeight = 60;
+const double defaultMapCardWidth = 125;
 const double defaultEmojiHeight = 250;
-const api = 'http://192.168.137.1:9080/';
-//
-// const api = 'https://community.lejw.top/';
+const double largeScreenWidth = 650;
+// const api = 'http://192.168.137.1:9080/';
+
+const api = 'https://community.lejw.top/';
 
 const pageSize = 5;
 const blogPageSize = 5;
 const firstCommentsPageSize = 5;
 const secondCommentsPageSize = 5;
-const defaultAvatar = '${api}file/default_avatar.png';
+const defaultAvatar =
+    'http://img.lejw.top/a95e19b9-346c-40fc-87a4-8b4f58e75353';
 
 const scheduleAndroidWidgetName = 'ScheduleWidgetProvider';
 const scheduleIOSWidgetName = 'ScheduleWidget';

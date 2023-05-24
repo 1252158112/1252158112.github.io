@@ -49,7 +49,7 @@ class QuillConfig {
       for (var element in keys) {
         picUrls.add(pics[element]!);
       }
-      return api + picUrls.first;
+      return picUrls.first;
     }
     // Copies the picked file from temporary cache to applications directory
     return "";
@@ -85,7 +85,7 @@ class QuillConfig {
       for (var element in keys) {
         picUrls.add(pics[element]!);
       }
-      return api + picUrls.first;
+      return picUrls.first;
     }
     return "";
   }
@@ -120,7 +120,7 @@ class QuillConfig {
       for (var element in keys) {
         picUrls.add(pics[element]!);
       }
-      return api + picUrls.first;
+      return picUrls.first;
     }
     return "";
   }

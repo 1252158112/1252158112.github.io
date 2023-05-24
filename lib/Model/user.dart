@@ -45,9 +45,8 @@ class User {
       id: json['id'] ?? -1,
       email: json['email'] ?? "",
       nickName: json['nickName'] ?? "未知用户",
-      icon: json['icon'] == null
-          ? "https://thirdqq.qlogo.cn/g?b=oidb&k=vhSjlsNDp6pAPSMHMSDJOw&s=100&t=1628738815"
-          : api + json['icon'],
+      icon: json['icon'] ??
+          "https://thirdqq.qlogo.cn/g?b=oidb&k=vhSjlsNDp6pAPSMHMSDJOw&s=100&t=1628738815",
       createTime:
           DateTime.parse(json['createTime'] ?? DateTime.now().toString()),
       introduce: json['introduce'] ?? "",

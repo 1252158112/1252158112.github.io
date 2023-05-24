@@ -27,7 +27,7 @@ class Topic {
         id: json['id'],
         name: json['name'],
         introduce: json['introduce'],
-        icon: (json['icon'] ?? '') == '' ? defaultAvatar : api + json['icon'],
+        icon: (json['icon'] ?? '') == '' ? defaultAvatar : json['icon'],
         state: json['state'] ?? 0,
         createUser: json['createUser'] ?? 0,
         follows: json['follows'] ?? 0,
