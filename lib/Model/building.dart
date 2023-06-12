@@ -52,8 +52,7 @@ class Building {
     }
     if (json['data'] != null) {
       List images = (json['data']['images'] as String).split(',');
-      List urls = [];
-      json['data']['images'] = urls.join(',');
+      json['data']['images'] = images.join(',');
     }
     return Building(
       id: json['data']['id'] ?? -1,

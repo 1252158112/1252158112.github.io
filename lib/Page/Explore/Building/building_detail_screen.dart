@@ -420,6 +420,7 @@ class _BuildingDetailScreenState extends State<BuildingDetailScreen> {
             ),
           ),
         );
+        // print(_building!.toJson());
         if (_building!.images != '') {
           var picUrls = _building!.images.split(',');
           for (var item in picUrls) {

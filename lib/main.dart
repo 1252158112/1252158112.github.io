@@ -120,6 +120,7 @@ class MyApp extends StatelessWidget {
 
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) {
+        print(lightDynamic);
         return GetMaterialApp(
           locale: ui.window.locale,
           scrollBehavior: const MaterialScrollBehavior()

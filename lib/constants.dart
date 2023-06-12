@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// 样式控制
 const Color seed = Colors.blueAccent;
 const double defaultPadding = 16.0;
 const double defaultButtonPadding = 10.0;
@@ -11,10 +12,13 @@ const double defaultMapCardHeight = 70;
 const double defaultMapCardWidth = 135;
 const double defaultEmojiHeight = 250;
 const double largeScreenWidth = 650;
+
+// api
 // const api = 'http://192.168.137.1:9080/';
 
 const api = 'https://community.lejw.top/';
 
+// 分页配置
 const pageSize = 5;
 const blogPageSize = 5;
 const firstCommentsPageSize = 5;

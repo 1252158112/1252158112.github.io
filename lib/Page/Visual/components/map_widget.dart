@@ -223,6 +223,7 @@ class _MapWidgetState extends State<MapWidget> {
               const AnimationsOptions(centerMarkerCurves: Curves.easeOutCubic),
           markers: blogList,
           showPolygon: false,
+          disableClusteringAtZoom: 1000,
           builder: (context, markers) {
             int index = (markers.first.key as ValueKey).value as int;
             return Stack(
@@ -441,7 +442,7 @@ class _MapWidgetState extends State<MapWidget> {
               options: MapOptions(
                 interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
                 center: pos,
-                maxZoom: 18.2,
+                maxZoom: 18,
                 zoom: 17,
                 minZoom: 2,
                 onPositionChanged: (MapPosition position, hasGesture) =>
